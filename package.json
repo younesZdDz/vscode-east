@@ -1,0 +1,54 @@
+{
+	"name": "vscode-east",
+	"displayName": "vscode-east",
+	"description": "",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.52.0"
+	},
+	"preview": true,
+	"keywords": [
+		"xml",
+		"xslt",
+		"xsd"
+	],
+	"xmlServer": {
+		"version": "0.14.1"
+	},
+	"activationEvents": [
+		"onLanguage:xml"
+	],
+	"categories": [
+		"Other"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "east.helloWorld",
+				"title": "Hello World"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "webpack --mode production",
+		"compile": "webpack --mode none",
+		"watch": "webpack --mode development --watch --info-verbosity verbose",
+		"tslint": "./node_modules/.bin/tslint -p .",
+		"build": "./node_modules/.bin/gulp build",
+		"build-server": "./node_modules/.bin/gulp build_server"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^8.0.0",
+		"@types/node": "^10.14.16",
+		"@types/vscode": "^1.37.0",
+		"ts-loader": "^6.0.1",
+		"tslint": "^5.12.1",
+		"typescript": "^3.4.1",
+		"typescript-tslint-plugin": "^0.3.1",
+		"vscode-test": "^1.2.0",
+		"webpack": "^4.44.1",
+		"webpack-cli": "^3.3.12"
+	},
+	"dependencies": {}
+}
