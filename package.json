@@ -34,9 +34,7 @@
 		"vscode:prepublish": "webpack --mode production",
 		"compile": "webpack --mode none",
 		"watch": "webpack --mode development --watch --info-verbosity verbose",
-		"tslint": "./node_modules/.bin/tslint -p .",
-		"build": "./node_modules/.bin/gulp build",
-		"build-server": "./node_modules/.bin/gulp build_server"
+		"tslint": "./node_modules/.bin/tslint -p ."
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^8.0.0",
