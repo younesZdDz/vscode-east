@@ -1,4 +1,5 @@
 import { Uri, ExtensionContext } from "vscode";
+import * as cp from "child_process";
 import * as path from "path";
 
 const pathExists = require("path-exists");
@@ -10,13 +11,15 @@ const JAVA_FILENAME = "java" + (isWindows ? ".exe" : "");
 
 export interface RequirementsData {
   java_home: string;
+  java_version: number;
 }
 
 export async function resolveRequirements(
   context: ExtensionContext
 ): Promise<RequirementsData> {
   const javaHome = await checkJava(context);
-  return Promise.resolve({ java_home: javaHome });
+  const javaVersion = await checkJavaVersion(javaHome);
+  return Promise.resolve({ java_home: javaHome, java_version: javaVersion });
 }
 
 function checkJava(context: ExtensionContext): Promise<string> {
@@ -44,6 +47,49 @@ function checkJava(context: ExtensionContext): Promise<string> {
       }
     });
   });
+}
+
+function checkJavaVersion(java_home: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    cp.execFile(
+      java_home + "/bin/java",
+      ["-version"],
+      {},
+      (error, stdout, stderr) => {
+        let javaVersion = parseMajorVersion(stderr);
+        if (javaVersion < 8) {
+          openJDKDownload(
+            reject,
+            "Java 8 or more recent is required to run. Please download and install a recent Java runtime."
+          );
+        } else {
+          resolve(javaVersion);
+        }
+      }
+    );
+  });
+}
+
+export function parseMajorVersion(content: string): number {
+  let regexp = /version "(.*)"/g;
+  let match = regexp.exec(content);
+  if (!match) {
+    return 0;
+  }
+  let version = match[1];
+  //Ignore '1.' prefix for legacy Java versions
+  if (version.startsWith("1.")) {
+    version = version.substring(2);
+  }
+
+  //look into the interesting bits now
+  regexp = /\d+/g;
+  match = regexp.exec(version);
+  let javaVersion = 0;
+  if (match) {
+    javaVersion = parseInt(match[0]);
+  }
+  return javaVersion;
 }
 
 function openJDKDownload(reject, cause: string) {
