@@ -50,6 +50,7 @@
 	},
 	"dependencies": {
 		"expand-home-dir": "0.0.3",
-		"find-java-home": "^1.1.0"
+		"find-java-home": "^1.1.0",
+		"vscode-languageclient": "^5.2.1"
 	}
 }
