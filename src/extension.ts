@@ -1,13 +1,19 @@
 import {
-	commands,
-	ExtensionContext,
-	window
-  } from "vscode";
+  commands,
+  ExtensionContext,
+  window,
+} from "vscode";
+import {
+  LanguageClientOptions,
+  RevealOutputChannelOn,
+  LanguageClient,
+} from "vscode-languageclient";
+import { prepareExecutable } from "./lemMinxStarter";
   import * as requirements from "./requirements";
 
+let languageClient: LanguageClient;
+
 export function activate(context: ExtensionContext) {
-
-
 	return requirements
     .resolveRequirements(context)
     .catch((error) => {
@@ -19,7 +25,45 @@ export function activate(context: ExtensionContext) {
       throw error;
     })
     .then((requirements) => {
-		console.log(requirements);
+      let clientOptions: LanguageClientOptions = {
+        documentSelector: [
+          { scheme: "file", language: "xml" },
+          { scheme: "untitled", language: "xml" },
+        ],
+        revealOutputChannelOn: RevealOutputChannelOn.Never,
+        initializationOptions: {
+          settings: {
+            xml: {
+              fileAssociations: [
+                {
+                  pattern: "**/*.xml",
+                  systemId: "east.xsd",
+                },
+              ],
+            },
+          },
+          extendedClientCapabilities: {
+            codeLens: {
+              codeLensKind: {
+                valueSet: ["references"],
+              },
+            },
+            actionableNotificationSupport: true,
+            openSettingsCommandSupport: true,
+          },
+        },
+      };
+
+      let serverOptions = prepareExecutable(requirements);
+      languageClient = new LanguageClient(
+        "east",
+        "East Support",
+        serverOptions,
+        clientOptions
+      );
+      let toDispose = context.subscriptions;
+      let disposable = languageClient.start();
+      toDispose.push(disposable);
 	});
 }
 
