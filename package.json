@@ -16,7 +16,9 @@
 		"version": "0.14.1"
 	},
 	"activationEvents": [
-		"onLanguage:xml"
+		"workspaceContains:**/east.xsd",
+		"workspaceContains:**/east.xslt",
+		"workspaceContains:**/config_EAST"
 	],
 	"categories": [
 		"Other"

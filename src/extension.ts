@@ -27,8 +27,8 @@ export function activate(context: ExtensionContext) {
     .then((requirements) => {
       let clientOptions: LanguageClientOptions = {
         documentSelector: [
-          { scheme: "file", language: "xml" },
-          { scheme: "untitled", language: "xml" },
+          { scheme: "file", language: "xml", pattern: "**/*.east.xml" },
+          { scheme: "untitled", language: "xml", pattern: "**/*.east.xml" },
         ],
         revealOutputChannelOn: RevealOutputChannelOn.Never,
         initializationOptions: {
@@ -36,7 +36,7 @@ export function activate(context: ExtensionContext) {
             xml: {
               fileAssociations: [
                 {
-                  pattern: "**/*.xml",
+                  pattern: "**/*.east.xml",
                   systemId: "east.xsd",
                 },
               ],
