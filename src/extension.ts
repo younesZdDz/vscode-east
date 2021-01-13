@@ -93,7 +93,11 @@ export function activate(context: ExtensionContext) {
                   }
                 }
               );
-
+              workspace
+                .openTextDocument(workspace.rootPath + path.sep + "east.html")
+                .then((doc) => {
+                  window.showTextDocument(doc);
+                });
             } catch (e) {
               window.showErrorMessage(e);
             }
