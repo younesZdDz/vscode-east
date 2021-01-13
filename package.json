@@ -16,7 +16,9 @@
 		"version": "0.14.1"
 	},
 	"activationEvents": [
-		"onLanguage:xml"
+		"workspaceContains:**/east.xsd",
+		"workspaceContains:**/east.xslt",
+		"workspaceContains:**/config_EAST"
 	],
 	"categories": [
 		"Other"
@@ -51,6 +53,7 @@
 	"dependencies": {
 		"expand-home-dir": "0.0.3",
 		"find-java-home": "^1.1.0",
-		"vscode-languageclient": "^5.2.1"
+		"vscode-languageclient": "^5.2.1",
+		"xslt-processor": "^0.11.5"
 	}
 }
