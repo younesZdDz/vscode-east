@@ -2,7 +2,6 @@ import {
   commands,
   ExtensionContext,
   window,
-  Disposable,
   workspace,
 } from "vscode";
 import {
@@ -74,39 +73,49 @@ export function activate(context: ExtensionContext) {
       let disposable = languageClient.start();
       toDispose.push(disposable);
       return languageClient.onReady().then(() => {
-        const disposable: Disposable = commands.registerCommand(
-          "east.runXSLTTransform",
-          async (): Promise<any> => {
-            const xml: string = window.activeTextEditor.document.getText();
-            const xslt: string = fs
-              .readFileSync(workspace.rootPath + path.sep + "east.xslt")
-              .toString();
-            try {
-              const rXml = xmlParse(xml);
-              const rXslt = xmlParse(xslt);
-              const result = xsltProcess(rXml, rXslt);
+        /**
+         * Transform from xslt to html
+         */
 
-              // window.showTextDocument(textDoc, ViewColumn.Beside);
-
-              fs.writeFile(
-                workspace.rootPath + path.sep + "east.html",
-                result,
-                function (err) {
-                  if (err) {
-                    window.showErrorMessage("Error creating html file");
+        context.subscriptions.push(
+          commands.registerCommand(
+            "east.runXSLTTransform",
+            async (): Promise<any> => {
+              const xml: string = window.activeTextEditor.document.getText();
+              const xslt: string = fs
+                .readFileSync(workspace.rootPath + path.sep + "east.xslt")
+                .toString();
+              try {
+                const rXml = xmlParse(xml);
+                const rXslt = xmlParse(xslt);
+                const result = xsltProcess(rXml, rXslt);
+                fs.writeFile(
+                  workspace.rootPath + path.sep + "east.html",
+                  result,
+                  function (err) {
+                    if (err) {
+                      window.showErrorMessage("Error creating html file");
+                    }
                   }
-                }
-              );
-              workspace
-                .openTextDocument(workspace.rootPath + path.sep + "east.html")
-                .then((doc) => {
-                  window.showTextDocument(doc);
-                });
-            } catch (e) {
-              window.showErrorMessage(e);
+                );
+                workspace
+                  .openTextDocument(workspace.rootPath + path.sep + "east.html")
+                  .then((doc) => {
+                    window.showTextDocument(doc);
+                  });
+                  commands.executeCommand('html.showPreviewToSide', workspace.rootPath + path.sep + "east.html");
+
+              } catch (e) {
+                window.showErrorMessage(e);
+              }
             }
-          }
+          )
         );
+
+        /**
+         * Execute a command on workspace
+         */
+
         context.subscriptions.push(
           commands.registerCommand(
             "east.workspace.executeCommand",
@@ -140,6 +149,11 @@ export function activate(context: ExtensionContext) {
             }
           )
         );
+
+        /**
+         * Execute the validate current file command
+         */
+
         context.subscriptions.push(
           commands.registerCommand(
             "east.validateCurrentFile",
@@ -167,8 +181,6 @@ export function activate(context: ExtensionContext) {
             }
           )
         );
-
-        context.subscriptions.push(disposable);
       });
     });
 }
