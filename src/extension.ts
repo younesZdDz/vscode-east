@@ -9,6 +9,10 @@ import {
   LanguageClientOptions,
   RevealOutputChannelOn,
   LanguageClient,
+  TextDocumentIdentifier,
+  CancellationToken,
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
 } from "vscode-languageclient";
 import * as fs from "fs";
 import * as path from "path";
@@ -102,6 +106,66 @@ export function activate(context: ExtensionContext) {
               window.showErrorMessage(e);
             }
           }
+        );
+        context.subscriptions.push(
+          commands.registerCommand(
+            "east.workspace.executeCommand",
+            (command, ...rest) => {
+              let token: CancellationToken;
+              let commandArgs: any[] = rest;
+              if (
+                rest &&
+                rest.length &&
+                CancellationToken.is(rest[rest.length - 1])
+              ) {
+                token = rest[rest.length - 1];
+                commandArgs = rest.slice(0, rest.length - 1);
+              }
+              const params: ExecuteCommandParams = {
+                command,
+                arguments: commandArgs,
+              };
+              if (token) {
+                return languageClient.sendRequest(
+                  ExecuteCommandRequest.type,
+                  params,
+                  token
+                );
+              } else {
+                return languageClient.sendRequest(
+                  ExecuteCommandRequest.type,
+                  params
+                );
+              }
+            }
+          )
+        );
+        context.subscriptions.push(
+          commands.registerCommand(
+            "east.validateCurrentFile",
+            async (params) => {
+              const uri = window.activeTextEditor.document.uri;
+              const identifier = TextDocumentIdentifier.create(uri.toString());
+              commands
+                .executeCommand(
+                  "east.workspace.executeCommand",
+                  "east.validateCurrentFile",
+                  identifier
+                )
+                .then(
+                  () => {
+                    window.showInformationMessage(
+                      "The current XML file was successfully validated."
+                    );
+                  },
+                  (error) => {
+                    window.showErrorMessage(
+                      "Error during XML validation " + error.message
+                    );
+                  }
+                );
+            }
+          )
         );
 
         context.subscriptions.push(disposable);

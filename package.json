@@ -27,8 +27,14 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "east.helloWorld",
-				"title": "Hello World"
+				"command": "east.runXSLTTransform",
+				"title": "Generate HTML page",
+				"category": "EAST"
+			},
+			{
+				"command": "east.validateCurrentFile",
+				"title": "Validate current file",
+				"category": "EAST"
 			}
 		]
 	},
