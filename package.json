@@ -2,6 +2,7 @@
 	"name": "vscode-east",
 	"publisher": "miage-team",
 	"displayName": "vscode-east",
+	"repository": "https://github.com/younesZdDz/vscode-east",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
