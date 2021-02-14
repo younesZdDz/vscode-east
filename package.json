@@ -4,6 +4,7 @@
 	"displayName": "vscode-east",
 	"repository": "https://github.com/younesZdDz/vscode-east",
 	"icon": "screens/icon.jpg",
+	"readme": "README.md",
 	"description": "",
 	"version": "0.1.1",
 	"engines": {
