@@ -3,6 +3,7 @@
 	"publisher": "miage-team",
 	"displayName": "vscode-east",
 	"repository": "https://github.com/younesZdDz/vscode-east",
+	"icon": "https://github.com/younesZdDz/vscode-east/screens/icon.jpg",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
